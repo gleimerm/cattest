@@ -55,6 +55,11 @@ script but not insert into the DB', false)
         ;
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|void|null
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
@@ -84,5 +89,9 @@ script but not insert into the DB', false)
     {
         $this->file = $options['file'] ?? '';
         $this->dryRun = $options['dry-run'] ?? true;
+        $this->dryRun = $options['create-table'] ?? '';
+        $this->dryRun = $options['db-user'] ?? '';
+        $this->dryRun = $options['db-password'] ?? '';
+        $this->dryRun = $options['db-host'] ?? '';
     }
 }
