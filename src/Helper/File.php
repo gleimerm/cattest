@@ -46,21 +46,25 @@ class File
         $validatedRecords = [];
         $errors = [];
         foreach ($records as $record) {
+            $validRecord = true;
             $name = trim($record['name']) ?? '';
             $surname = trim($record['surname']) ?? '';
             $email = trim($record['email']) ?? '';
             $violations = $validator->validate($email, $emailConstraint);
             foreach ($violations as $violation) {
                 $errors[] = $violation->getMessage();
+                $validRecord = false;
             }
             $violations2 = $validator->validate($name, $blankConstraint);
             foreach ($violations2 as $violation) {
                 $errors[] = 'Name ' . $violation->getMessage();
+                $validRecord = false;
             }
-            if (count($errors)) {
+            if (!$validRecord) {
                 continue;
             }
             $validatedRecords[] = [ucfirst(strtolower($name)), ucfirst(strtolower($surname)), $email];
+
         }
         return [$errors, $validatedRecords];
     }

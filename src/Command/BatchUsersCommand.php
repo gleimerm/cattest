@@ -3,7 +3,12 @@ declare(strict_types = 1);
 
 namespace App\Command;
 
+use App\Helper\DbConnection;
 use App\Helper\File;
+use App\Service\DatabaseService;
+use App\Service\UserService;
+use Doctrine\DBAL\Exception\ConnectionException;
+use Doctrine\DBAL\Exception\TableNotFoundException;
 use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,7 +46,7 @@ PHP script, that is executed from the command line, which accepts a CSV file as 
 inserted into a MySQL database.
 DESC;
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setDescription($this->description)
@@ -80,18 +85,45 @@ script but not insert into the DB', false)
             $io->title('Dry run, DB operations are not executed');
             exit(0);
         }
+
+        $params = [
+            'host' => $this->dbHost,
+            'port' => 3306,
+            'user' => $this->dbUser,
+            'password' => $this->dbPassword,
+            'driver' => 'pdo_mysql'
+        ];
+        try {
+            $conn = (new DbConnection)->getConnection($params);
+            if ($this->createTable) {
+                (new DatabaseService($conn))->createTable();
+            }
+            foreach ($records as $record) {
+                (new UserService($conn))->addUser($record);
+            }
+            $total_users = count($records);
+            $io->success('total number of records added: ' . $total_users);
+            exit(0);
+        } catch (ConnectionException $connE) {
+            $io->error("Could not access the DB" . $connE->getMessage());
+        } catch (TableNotFoundException $e) {
+            $io->error("Database/Table does not exists");
+        } catch (Exception $e) {
+            $io->error($e->getMessage());
+        }
+        exit(128);
     }
 
     /**
      * @param array $options
      */
-    private function processOptions(array $options = [])
+    private function processOptions(array $options = []): void
     {
         $this->file = $options['file'] ?? '';
         $this->dryRun = $options['dry-run'] ?? true;
-        $this->dryRun = $options['create-table'] ?? '';
-        $this->dryRun = $options['db-user'] ?? '';
-        $this->dryRun = $options['db-password'] ?? '';
-        $this->dryRun = $options['db-host'] ?? '';
+        $this->createTable = $options['create-table'] ?? true;
+        $this->dbUser = $options['db-user'] ?? '';
+        $this->dbPassword = $options['db-password'] ?? '';
+        $this->dbHost = $options['db-host'] ?? '';
     }
 }
