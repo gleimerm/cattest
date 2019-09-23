@@ -50,7 +50,7 @@ DESC;
     {
         $this
             ->setDescription($this->description)
-            ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'name of the CSV to be parsed')
+            ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'name(path) of the CSV to be parsed')
             ->addOption('create-table', 'c', InputOption::VALUE_OPTIONAL, 'MySQL users table to be built')
             ->addOption('dry-run', 'd', InputOption::VALUE_OPTIONAL, 'used with the --file directive in case we want to run the
 script but not insert into the DB', false)
