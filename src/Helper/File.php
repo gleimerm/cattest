@@ -63,7 +63,7 @@ class File
             if (!$validRecord) {
                 continue;
             }
-            $validatedRecords[] = [ucfirst(strtolower($name)), ucfirst(strtolower($surname)), $email];
+            $validatedRecords[] = [ucfirst(strtolower($name)), ucfirst(strtolower($surname)), strtolower($email)];
 
         }
         return [$errors, $validatedRecords];

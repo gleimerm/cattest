@@ -8,9 +8,12 @@ inserted into a MySQL database.
 - Install Composer(https://getcomposer.org/doc/00-intro.md)
 - Install PHP 7.2
 - Install MySQL 5.7
+- Git
 
 ```
-cd /working/directory
+cd /path
+git clone https://github.com/gleimerm/cattest.git
+cd cattest
 composer install
 ``` 
 
@@ -32,5 +35,15 @@ Options:
 
 
 php bin/console batch-users -f /path/users.csv -c -u root -p root --db-host=localhost
+Batch Users
+===========
+
+ * The email "ham@seek.com" is not a valid email.
+ * The email "mo'connor@cat.net.nz" is not a valid email.
+ * The email "ham@seek.com" is not a valid email.
+ * The email "edward@jikes@com.au" is not a valid email.
+
+                                                                                                                        
+ [OK] total number of records added: 7  
 ```
 
